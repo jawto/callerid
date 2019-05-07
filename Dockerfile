@@ -15,6 +15,9 @@ RUN apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/co
 RUN apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/main \
     patch
 
+RUN apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/v3.3/main \
+    perl-lwp-protocol-https
+    
 # Build and install Yate.
 RUN mkdir /build && \
     curl -SL http://yate.null.ro/tarballs/yate6/yate-6.1.0-1.tar.gz | tar -xzC /build
