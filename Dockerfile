@@ -1,39 +1,26 @@
-FROM lsiobase/alpine:3.9
+FROM debian:stable-slim
 
-RUN apk add --no-cache \
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     autoconf \
-    build-base \
     curl \
-    libstdc++ \
-    perl-json \
-    perl-libwww \
-    tar
+    build-essential \
+    libjson-perl \
+    libjson-xs-perl
 
-RUN apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community \
-    perl-json-xs
-
-RUN apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/main \
-    patch
-
-RUN apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/v3.3/main \
-    perl-lwp-protocol-https
-    
 # Build and install Yate.
 RUN mkdir /build && \
     curl -SL http://yate.null.ro/tarballs/yate6/yate-6.1.0-1.tar.gz | tar -xzC /build
 
-# Apply patches to enable compiling on Alpine.
 WORKDIR /build/yate
-COPY patches/* /build/
-RUN patch Makefile.in < /build/Makefile.in.patch
-RUN patch engine/Mutex.cpp < /build/Mutex.cpp.patch
-RUN patch yateclass.h < /build/yateclass.h.patch
-
-RUN ./autogen.sh && ./configure --prefix=/usr/local
-RUN make && make install
-
-RUN rm -rf /build
-RUN apk del --purge autoconf build-base curl tar patch
+RUN ./autogen.sh && \
+    ./configure --prefix=/usr/local && \
+    make && \
+    make install-noapi && \
+    echo "/usr/local/lib" >> /etc/ld.so.conf && \
+    ldconfig && \
+    rm -rf /build && \
+    DEBIAN_FRONTEND=noninteractive apt-get purge -y autoconf build-essential && \
+    DEBIAN_FRONTEND=noninteractive apt-get -y clean
 
 # Add the callerid script
 COPY scripts/caller-id.pl /usr/local/share/yate/scripts/
