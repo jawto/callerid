@@ -5,7 +5,9 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     curl \
     build-essential \
     libjson-perl \
-    libjson-xs-perl
+    libjson-xs-perl \
+    liblwp-protocol-https-perl \
+    libwww-perl
 
 # Build and install Yate.
 RUN mkdir /build && \
