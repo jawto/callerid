@@ -4,10 +4,12 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     autoconf \
     curl \
     build-essential \
+    iputils-ping \
     libjson-perl \
     libjson-xs-perl \
     liblwp-protocol-https-perl \
-    libwww-perl
+    libwww-perl \
+    procps
 
 # Build and install Yate.
 RUN mkdir /build && \

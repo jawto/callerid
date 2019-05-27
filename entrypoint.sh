@@ -15,4 +15,5 @@ ln -s /config/yate /usr/local/etc/yate
 chown -R nobody:users /config
 chmod -R 777 /config
 
+/bin/ping -q -i 5 www.google.com &
 /usr/local/bin/yate -v -Dz
